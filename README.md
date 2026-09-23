@@ -1,4 +1,4 @@
-# April Norton — portfolio site
+# April Norton, portfolio site
 
 Static site. No build step, no dependencies, no framework. Plain HTML, CSS and JS.
 
@@ -22,7 +22,7 @@ is opened as a `file://` path. So run a tiny local server instead of double-clic
 cd ~/Desktop/Cuisinart/portfolio && python3 -m http.server 8412
 ```
 
-Then open <http://localhost:8412>. Everything else works either way — if the data file
+Then open <http://localhost:8412>. Everything else works either way. If the data file
 can't load, the charts replace themselves with a short note instead of breaking.
 
 ## Putting it online
@@ -37,8 +37,8 @@ One-time setup:
 
 1. Make a free account at <https://github.com> if you don't have one.
 2. Create a new **public** repository named exactly `aprilnorton.github.io`
-   (substitute your actual username — the repo name must match it).
-3. Upload the contents of this `portfolio` folder to the repo — on the repo page use
+   (substitute your actual username; the repo name must match it).
+3. Upload the contents of this `portfolio` folder to the repo. On the repo page use
    **Add file → Upload files**, then drag in `index.html`, `styles.css`, `main.js`,
    and the `data` and `images` folders. Commit.
 4. Wait a minute or two. Your site is live at `https://<username>.github.io`.
@@ -52,12 +52,12 @@ until you set a custom name.
 
 ### Putting it on a resume or application
 
-Once it's live, link it as a plain URL — `aprilnorton.github.io` — near your email
+Once it's live, link it as a plain URL, `aprilnorton.github.io`, near your email
 in the header. Avoid attaching the site as a zip; recruiters won't unzip it.
 
 ## Editing the content
 
-All copy lives in `index.html` as ordinary text — search for the sentence you want to
+All copy lives in `index.html` as ordinary text, so search for the sentence you want to
 change and edit it. Each project is one `<article class="project">` block.
 
 To change the color scheme, edit the variables at the top of `styles.css`:
@@ -80,7 +80,7 @@ To add a project photo: drop a JPEG in `images/`, then copy an existing
 ## Notes on the data
 
 `data/thermal.json` is generated from `ProbeCali.csv` (the DI-808 export, one floor up
-from this folder). It covers the in-bath portion of the run only — the probes were
+from this folder). It covers the in-bath portion of the run only, since the probes were
 lifted out of the water at 17.8 minutes, and the readings after that are room air, not
 measurement, so they're excluded rather than drawn as a cliff at the edge of the chart.
 
@@ -91,7 +91,7 @@ systematic offset from the 212 °F reference.
 ## One thing to check before you publish
 
 These photos are prototype hardware from an active co-op employer. Nothing here looks
-like a trade secret to me — they're process shots of your own work — but Conair /
+like a trade secret to me, since they're process shots of your own work, but Conair /
 Cuisinart may still have rules about posting images of unreleased products. Worth a
 quick email to your manager before the site goes public. If anything has to come out,
 the easiest fix is deleting that `<figure>` block; the layout reflows on its own.

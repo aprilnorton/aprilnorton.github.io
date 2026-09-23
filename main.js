@@ -1,5 +1,5 @@
 /* =========================================================
-   April Norton — portfolio interactions
+   April Norton, portfolio interactions
    ========================================================= */
 (function () {
   'use strict';
@@ -115,12 +115,14 @@
   shots.forEach(function (b, i) {
     b.addEventListener('click', function () { open(i); });
   });
-  document.getElementById('lbX').addEventListener('click', close);
-  document.getElementById('lbP').addEventListener('click', function () { show(idx - 1); });
-  document.getElementById('lbN').addEventListener('click', function () { show(idx + 1); });
-  lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+  if (lb) {
+    document.getElementById('lbX').addEventListener('click', close);
+    document.getElementById('lbP').addEventListener('click', function () { show(idx - 1); });
+    document.getElementById('lbN').addEventListener('click', function () { show(idx + 1); });
+    lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+  }
   document.addEventListener('keydown', function (e) {
-    if (!lb.classList.contains('open')) return;
+    if (!lb || !lb.classList.contains('open')) return;
     if (e.key === 'Escape') close();
     else if (e.key === 'ArrowLeft') show(idx - 1);
     else if (e.key === 'ArrowRight') show(idx + 1);
@@ -129,6 +131,7 @@
   /* =========================================================
      CHARTS
      ========================================================= */
+  if (document.getElementById('chartLines'))
   fetch('data/thermal.json')
     .then(function (r) { return r.json(); })
     .then(function (d) { drawLines(d); drawDev(d); fillTable(d); })
@@ -138,7 +141,7 @@
       Array.prototype.forEach.call(wraps, function (w) {
         w.innerHTML = '<p style="font-size:.85rem;color:#8A7C6E;padding:1.5rem 0;margin:0">' +
           'Chart data needs a local server to load. Run <code>python3 -m http.server</code> ' +
-          'in this folder and open <code>localhost:8000</code> — or view the deployed site.</p>';
+          'in this folder and open <code>localhost:8000</code>, or view the deployed site.</p>';
       });
     });
 
@@ -198,7 +201,7 @@
       return p;
     }
 
-    // 8 probe traces — one visual class, thin and low emphasis
+    // 8 probe traces, one visual class, thin and low emphasis
     d.series.forEach(function (s) {
       el('path', { d: path(s.v), fill: 'none', stroke: C.steel, 'stroke-width': 1.4,
         opacity: .55, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
