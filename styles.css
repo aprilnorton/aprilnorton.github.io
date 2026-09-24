@@ -147,7 +147,7 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 600; line-height: 1.0
   border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden;
   background: var(--paper-deep); position: relative;
 }
-.portrait img { width: 100%; aspect-ratio: 4/5; object-fit: cover; }
+.portrait img { width: 100%; height: auto; aspect-ratio: 4/5; object-fit: cover; }
 /* placeholder shown until a real portrait file is dropped in */
 .portrait.empty {
   aspect-ratio: 4/5; display: grid; place-items: center; text-align: center;
