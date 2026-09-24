@@ -5,14 +5,23 @@
   'use strict';
 
   var NS = 'http://www.w3.org/2000/svg';
+  /* Chart colours are read from the CSS custom properties so the SVG can never
+     drift out of sync with the stylesheet. Fallbacks mirror :root in styles.css. */
+  var CS = getComputedStyle(document.documentElement);
+  function tok(name, fallback) {
+    var v = CS.getPropertyValue(name).trim();
+    return v || fallback;
+  }
   var C = {
-    steel:  '#7C8A93',
-    accent: '#C0562B',
-    ink:    '#1F1B18',
-    ink3:   '#8A7C6E',
-    rule:   '#E0D3C1',
-    wash:   '#F6E4D9'
+    steel:  tok('--steel',       '#8C8A93'),
+    accent: tok('--accent',      '#7A1E2D'),
+    ink:    tok('--ink',         '#16151A'),
+    ink3:   tok('--ink-3',       '#6F6D78'),
+    rule:   tok('--rule',        '#E1E0DE'),
+    wash:   tok('--accent-wash', '#F6E9EB'),
+    paper:  tok('--paper',       '#F8F8F7')
   };
+  var MONO = 'JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, monospace';
 
   function el(name, attrs, parent) {
     var n = document.createElementNS(NS, name);
@@ -139,7 +148,7 @@
       // If opened via file:// without a server, fetch is blocked.
       var wraps = document.querySelectorAll('.chart-wrap');
       Array.prototype.forEach.call(wraps, function (w) {
-        w.innerHTML = '<p style="font-size:.85rem;color:#8A7C6E;padding:1.5rem 0;margin:0">' +
+        w.innerHTML = '<p style="font-size:.85rem;color:' + C.ink3 + ';padding:1.5rem 0;margin:0">' +
           'Chart data needs a local server to load. Run <code>python3 -m http.server</code> ' +
           'in this folder and open <code>localhost:8000</code>, or view the deployed site.</p>';
       });
@@ -161,28 +170,28 @@
     for (var v = 60; v <= 220; v += 40) {
       el('line', { x1: M.l, x2: M.l + iw, y1: Y(v), y2: Y(v), stroke: C.rule, 'stroke-width': 1 }, svg);
       var t = el('text', { x: M.l - 10, y: Y(v) + 4, 'text-anchor': 'end', fill: C.ink3,
-        'font-size': 11, 'font-family': 'IBM Plex Mono, monospace' }, svg);
+        'font-size': 11, 'font-family': MONO }, svg);
       t.textContent = v;
     }
     var yl = el('text', { x: M.l - 10, y: M.t - 4, 'text-anchor': 'end', fill: C.ink3,
-      'font-size': 10, 'font-family': 'IBM Plex Mono, monospace' }, svg);
+      'font-size': 10, 'font-family': MONO }, svg);
     yl.textContent = '°F';
 
     // x axis
     for (var m = 0; m <= 18; m += 3) {
       var xt = el('text', { x: X(m), y: H - 14, 'text-anchor': 'middle', fill: C.ink3,
-        'font-size': 11, 'font-family': 'IBM Plex Mono, monospace' }, svg);
+        'font-size': 11, 'font-family': MONO }, svg);
       xt.textContent = m;
     }
     var xl = el('text', { x: M.l + iw / 2, y: H - 1, 'text-anchor': 'middle', fill: C.ink3,
-      'font-size': 10, 'font-family': 'IBM Plex Mono, monospace' }, svg);
+      'font-size': 10, 'font-family': MONO }, svg);
     xl.textContent = 'MINUTES ELAPSED';
 
     // plateau band annotation
     el('rect', { x: X(4), y: M.t, width: X(8.5) - X(4), height: ih,
       fill: C.wash, opacity: .55 }, svg);
     var bl = el('text', { x: (X(4) + X(8.5)) / 2, y: M.t + 14, 'text-anchor': 'middle',
-      fill: '#96401D', 'font-size': 10, 'font-family': 'IBM Plex Mono, monospace',
+      fill: C.accent, 'font-size': 10, 'font-family': MONO,
       'letter-spacing': '.08em' }, svg);
     bl.textContent = 'PLATEAU';
 
@@ -190,7 +199,7 @@
     el('line', { x1: M.l, x2: M.l + iw, y1: Y(212), y2: Y(212), stroke: C.ink3,
       'stroke-width': 1, 'stroke-dasharray': '3 4' }, svg);
     var rl = el('text', { x: M.l + iw + 6, y: Y(212) + 4, fill: C.ink3, 'font-size': 10,
-      'font-family': 'IBM Plex Mono, monospace' }, svg);
+      'font-family': MONO }, svg);
     rl.textContent = '212 ref';
 
     function path(vals) {
@@ -213,7 +222,7 @@
     // hover layer
     var hoverLine = el('line', { y1: M.t, y2: M.t + ih, stroke: C.ink, 'stroke-width': 1,
       opacity: 0, 'pointer-events': 'none' }, svg);
-    var hoverDot = el('circle', { r: 4.5, fill: C.accent, stroke: '#FAF5EE',
+    var hoverDot = el('circle', { r: 4.5, fill: C.accent, stroke: C.paper,
       'stroke-width': 2, opacity: 0, 'pointer-events': 'none' }, svg);
     var hit = el('rect', { x: M.l, y: M.t, width: iw, height: ih, fill: 'transparent',
       style: 'cursor:crosshair' }, svg);
@@ -276,11 +285,11 @@
       el('line', { x1: X(v), x2: X(v), y1: M.t - 6, y2: M.t + ih,
         stroke: v === 0 ? C.ink3 : C.rule, 'stroke-width': 1 }, svg);
       var t = el('text', { x: X(v), y: H - 22, 'text-anchor': 'middle', fill: C.ink3,
-        'font-size': 11, 'font-family': 'IBM Plex Mono, monospace' }, svg);
+        'font-size': 11, 'font-family': MONO }, svg);
       t.textContent = (v > 0 ? '+' : '') + v.toFixed(0);
     }
     var xl = el('text', { x: M.l + iw / 2, y: H - 5, 'text-anchor': 'middle', fill: C.ink3,
-      'font-size': 10, 'font-family': 'IBM Plex Mono, monospace' }, svg);
+      'font-size': 10, 'font-family': MONO }, svg);
     xl.textContent = 'DEVIATION FROM GRAND MEAN (°F)';
 
     var tt = document.getElementById('tt2');
@@ -303,14 +312,14 @@
       var g = el('g', { style: 'cursor:pointer' }, svg);
       el('circle', { cx: X(r.dev), cy: y, r: 14, fill: 'transparent' }, g);
       var dot = el('circle', { cx: X(r.dev), cy: y, r: 5.5, fill: C.accent,
-        stroke: '#FAF5EE', 'stroke-width': 2 }, g);
+        stroke: C.paper, 'stroke-width': 2 }, g);
 
       // value label
       var val = el('text', {
         x: X(r.dev) + (r.dev >= 0 ? 13 : -13), y: y + 4,
         'text-anchor': r.dev >= 0 ? 'start' : 'end',
         fill: C.ink3, 'font-size': 11,
-        'font-family': 'IBM Plex Mono, monospace'
+        'font-family': MONO
       }, svg);
       val.textContent = (r.dev > 0 ? '+' : '') + r.dev.toFixed(2);
 
@@ -335,7 +344,7 @@
     var top = rows[0], bot = rows[rows.length - 1];
     var bx = X(top.dev) + 62;
     var note = el('text', { x: M.l + iw + 60, y: M.t + ih + 2, 'text-anchor': 'end',
-      fill: '#96401D', 'font-size': 11, 'font-family': 'IBM Plex Mono, monospace' }, svg);
+      fill: C.accent, 'font-size': 11, 'font-family': MONO }, svg);
     note.textContent = 'total spread ' + d.spread.toFixed(2) + ' °F';
   }
 
@@ -351,8 +360,8 @@
       tb.appendChild(tr);
     });
     var tr2 = document.createElement('tr');
-    tr2.innerHTML = '<td style="color:#8A7C6E">Grand mean</td><td style="color:#8A7C6E">' +
-      d.grandMean.toFixed(2) + '</td><td style="color:#8A7C6E">spread ' +
+    tr2.innerHTML = '<td style="color:' + C.ink3 + '">Grand mean</td><td style="color:' + C.ink3 + '">' +
+      d.grandMean.toFixed(2) + '</td><td style="color:' + C.ink3 + '">spread ' +
       d.spread.toFixed(2) + '</td><td></td>';
     tb.appendChild(tr2);
   }
