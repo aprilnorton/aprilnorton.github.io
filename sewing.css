@@ -303,3 +303,65 @@ figure.shot figcaption b { color: var(--ink-2); font-weight: 700; }
   padding: .7rem 1.1rem; z-index: 100; border-radius: 0 0 10px 0; text-decoration: none; font-size: .88rem;
 }
 .skip:focus { left: 0; }
+
+/* ============================================================
+   PRINT  ·  paginated PDF version of the site
+   ============================================================ */
+@media print {
+
+  /* keep the palette instead of letting the browser flatten it */
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* scroll reveals never trigger during a print render, so force them open */
+  .js .rv, .rv, .js .rv.in {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* screen-only chrome */
+  .nav, .strip, .lb, .to-top { display: none !important; }
+
+  @page { size: Letter; margin: 13mm 12mm; }
+
+  html, body { background: #fff !important; }
+  body { font-size: 10.5pt; line-height: 1.5; }
+
+  /* one project per page */
+  .project { break-before: page; page-break-before: always; }
+  .hero    { break-before: avoid;  page-break-before: avoid;
+             min-height: 0 !important; padding-top: 0 !important; }
+  .foot    { break-before: page; page-break-before: always; }
+
+  /* never split a unit of meaning across a page boundary */
+  .p-head, .stats, .stat, .block,
+  figure, figure.shot, .feature,
+  .hero-grid, .hero-meta {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  h1, h2, h3, h4 { break-after: avoid; page-break-after: avoid; }
+
+  /* keep tall images inside a single page */
+  .feature img, .shot img, .portrait img {
+    max-height: 165mm;
+    width: auto;
+    object-fit: contain;
+  }
+  .feature, .shot { text-align: center; }
+
+  /* Chrome renders print at roughly a 700px viewport, which trips the narrow
+     breakpoints and collapses every two-column layout. Restore them so the
+     PDF uses the full width of the page. */
+  .hero-grid { grid-template-columns: 1.35fr .75fr !important; align-items: start; }
+  .p-body    { grid-template-columns: 1fr 1fr !important; }
+  .p-head    { grid-template-columns: auto 1fr !important; }
+  .teaser-in { grid-template-columns: 1fr 1fr !important; }
+  .gal-3     { grid-template-columns: repeat(3, 1fr) !important; }
+  .gal-4     { grid-template-columns: repeat(4, 1fr) !important; }
+  .p-sub     { max-width: 70ch !important; }
+  .nav-links a:not(.cross) { display: inline !important; }
+}
